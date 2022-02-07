@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParse = require("body-parser");
 const mongoose= require('mongoose');
+const path=require('path')
 const read = require("body-parser/lib/read");
 // mongoose.connect('mongodb+srv://admin-shubham:test123@cluster0.a5w6k.mongodb.net/todo', {useNewUrlParser: true});
 mongoose.connect('mongodb://localhost:27017/TT', {useNewUrlParser: true});
@@ -206,6 +207,7 @@ app.post("/", function(req,res){
     const item=new Item({
         name:itemName
     }); 
+   
     // if(listName==="Monday"){
     // item.save();
     // res.redirect("/");}
@@ -231,6 +233,7 @@ app.post("/", function(req,res){
             {
                 res.redirect("/"+days[i-1]);
             }
+           
         });
 
     // if (req.body.list === "Work") {
@@ -280,6 +283,39 @@ app.post("/days",function(req,res){
 //         });
 //     }   
 // });
+// Here we start for the second page
+
+const weekdays= ["Monday","Tuesday","Wednesday","Thursday","Friday"]
+
+app.get("/"+"nextpage",(req,res)=>{
+
+    weekdays.forEach((result)=>{
+
+         List.findOne({name:result},function(err,found){
+
+            if(!err)
+            {
+                if(found)
+                {
+                    const abc=[];
+                    
+                    for(let i=3;i<found.items.length;i++)
+                    {
+                        abc.push(found.items[i]);
+                    }
+                    res.render('secondpage',{title:found.name, data:abc})
+                    // res.json(ans)
+                }
+            }
+
+        });
+
+
+    })
+   
+  
+})
+
 app.listen(3000, function(){
     console.log("Server UP");
     
