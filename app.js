@@ -345,7 +345,7 @@ app.post("/days",function(req,res){
 let a=[],b=[],c=[]
 var arr=new Array(7);
 let weekdays= ["Monday","Tuesday","Wednesday","Thursday","Friday"]
-app.get("/nxt",async function(req,res){
+app.get("/wxt",async function(req,res){
 
     
     //     List.findOne({name:"Monday"},function(err,found){
@@ -377,7 +377,8 @@ app.get("/nxt",async function(req,res){
     //     }
     // });
   
-    let x= await List.find({})
+    let x = await List.find({})
+
     // res.json(x)
     // let b=JSON.stringify(x);
     // console.log(x[0].items[0].name)
@@ -400,8 +401,8 @@ app.get("/nxt",async function(req,res){
 // a=[];b=[];
 });
 app.get("/next",function(req,res){
+    console.log(arr.length)
     res.render("secondpage",{data:arr})
-    
 });
 app.listen(3000, function(){
     console.log("Server UP");
