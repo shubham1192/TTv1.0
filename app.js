@@ -1,7 +1,6 @@
 const express = require("express");
 const bodyParse = require("body-parser");
 const mongoose= require('mongoose');
-const path=require('path')
 const read = require("body-parser/lib/read");
 // mongoose.connect('mongodb+srv://admin-shubham:test123@cluster0.a5w6k.mongodb.net/todo', {useNewUrlParser: true});
 mongoose.connect('mongodb://localhost:27017/TT', {useNewUrlParser: true});
@@ -38,6 +37,8 @@ const item3=new Item({
 const defaultItems=[item1,item2,item3];
 let i=0;
 const days=["Tuesday","Wednesday","Thursday","Friday"];
+var count=0;
+var abc=[];
 //new schema for custom lists
 const listSchema= {
     name: String,
@@ -66,7 +67,7 @@ app.get("/", function(req, res){
             else{
                 res.render("list", {title: foundList.name, newListItems: foundList.items });
             }
-            console.log(i);
+            // console.log(i);
         }
     });
 });
@@ -85,7 +86,7 @@ app.get("/"+"Tuesday", function(req, res){
             else{
                 res.render("list", {title: foundList.name, newListItems: foundList.items })
             }
-            console.log(i);
+            // console.log(i);
         }
     });
 });
@@ -104,7 +105,7 @@ app.get("/"+"Wednesday", function(req, res){
             else{
                 res.render("list", {title: foundList.name, newListItems: foundList.items })
             }
-            console.log(i);
+            // console.log(i);
         }
     });
 });
@@ -123,7 +124,7 @@ app.get("/"+"Thursday", function(req, res){
             else{
                 res.render("list", {title: foundList.name, newListItems: foundList.items })
             }
-            console.log(i);
+            // console.log(i);
         }
     });
 });
@@ -142,7 +143,7 @@ app.get("/"+"Friday", function(req, res){
             else{
                 res.render("list", {title: foundList.name, newListItems: foundList.items })
             }
-            console.log(i);
+            // console.log(i);
         }
     });
 });
@@ -285,37 +286,123 @@ app.post("/days",function(req,res){
 // });
 // Here we start for the second page
 
-const weekdays= ["Monday","Tuesday","Wednesday","Thursday","Friday"]
 
-app.get("/"+"nextpage",(req,res)=>{
 
-    weekdays.forEach((result)=>{
+// app.get("/"+"nextpage",(req,res)=>{
 
-         List.findOne({name:result},function(err,found){
+//     weekdays.forEach((result)=>{
 
-            if(!err)
-            {
-                if(found)
-                {
-                    const abc=[];
+//          List.findOne({name:result},function(err,found){
+
+//             if(!err)
+//             {
+//                 if(found)
+//                 {
+//                     const abc=[];
                     
-                    for(let i=3;i<found.items.length;i++)
-                    {
-                        abc.push(found.items[i]);
-                    }
-                    res.render('secondpage',{title:found.name, data:abc})
-                    // res.json(ans)
-                }
-            }
+//                     for(let i=3;i<found.items.length;i++)
+//                     {
+//                         abc.push(found.items[i]);
+//                     }
+//                     res.render('secondpage',{title:found.name, data:abc})
+//                     res.red
+//                     // res.json(ans)
+//                 }
+//             }
 
-        });
+//         });
 
 
-    })
-   
+//     })
+
+// app.get("/nxt",function(req,res){
+
+// count=0;    
+// for(var j=0;j<weekdays.length;j++)
+// { 
+//     List.findOne({name:weekdays[count]},function(err,found){
+
+//     if(!err)
+//     {
+//         if(found)
+//         {
+            
+//                 abc.push(found.items);
+            
+//             // res.render('secondpage',{title:found.name, data:abc})
+//         }
+//     }           
+//     // console.log(abc.length);    
+//     });
+//     count++;
+// }
+// console.log( abc.length);
+// res.render("secondpage",{title:weekdays, data:abc})
+
+// })
   
-})
+// })
+let a=[],b=[],c=[]
+var arr=new Array(7);
+let weekdays= ["Monday","Tuesday","Wednesday","Thursday","Friday"]
+app.get("/nxt",async function(req,res){
 
+    
+    //     List.findOne({name:"Monday"},function(err,found){
+    //         if(!err)
+    //         {
+    //             if(found)
+    //             {
+    //                 for(let i=3;i<found.items.length;i++)
+    //                 {
+    //                         a.push(found.items[i].name);
+                            
+    //                 }
+
+    //             }
+    //         }
+    //     });
+    // List.findOne({name:"Tuesday"},function(err,found){
+    //     if(!err)
+    //     {
+    //         if(found)
+    //         {
+    //                 for(let i=3;i<found.items.length;i++)
+    //                 {
+    //                     b.push(found.items[i].name);
+    //                 }
+    //         }
+    //         res.render('secondpage',{name:"Tuesday",data:b})
+    //         b=[]
+    //     }
+    // });
+  
+    let x= await List.find({})
+    // res.json(x)
+    // let b=JSON.stringify(x);
+    // console.log(x[0].items[0].name)
+    for(let i=0;i<x.length;i++)
+    {
+        arr[i] = new Array(x[i].items.length-2);
+        for(let j=0;j<x[i].items.length;j++)
+        {
+            if(j==0)
+            {
+                arr[i][j]=x[i].name;
+                continue;
+            }
+            if(j>=3)
+            arr[i][j-2]=x[i].items[j].name;
+        }
+    }
+    console.log(arr);
+    res.redirect("/next")
+// a=[];b=[];
+});
+app.get("/next",function(req,res){
+    res.render("secondpage",{data:arr})
+    
+});
 app.listen(3000, function(){
     console.log("Server UP");
     
