@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Third Page</title>
+</head>
+<body>
+    
+
+    <form>
+
+        <% for(var i=0;i<day.length;i++){ %>
+     
+           <% if(i===0){ %>
+     
+             <p><h1><%= day[i] %></h1></p>
+     
+           
+         <% }else{ %>
+
+         <span> 
+          <%= day[i] %> <input type="checkbox" name="<%=day[i]%>" id="<%=day[i]%>">
+         </span>
+
+         <% } %>
+                <br>
+        <% } %>
+        <input type="button" value="Submit" id="mybutton">
+    </form>
+
+
+    <script src="/app.js"></script>
+</body>
+</html>
