@@ -170,3 +170,103 @@ footer {
   color: rgba(0, 0, 0, 0.5);
   text-align: center;
 }
+
+/* SECOND PAGE */
+.main
+{
+  margin:91px auto;
+width: 83%;
+
+}
+.days>p{
+  /* font-size: 3rem;
+  display: inline-block;
+  background-color: yellow;
+  width: 25%;
+  margin-right: 2rem; */
+  font-size: 2rem;
+display: inline-block;
+background-color: yellow;
+width: 257px;
+/* margin-right: 2rem; */
+text-align: center;
+
+}
+.day1{
+  font-size: 1rem;
+  
+border: 124px black;
+border-radius: 20px;
+background-color: yellowgreen;
+margin: 17px;
+  margin-left: 17px;
+padding: 10px;
+}
+.day2{
+  font-size: 1rem;
+
+border: 124px black;
+border-radius: 20px;
+background-color: yellowgreen;
+margin: 17px;
+  margin-left: 17px;
+padding: 10px;
+}
+.day3{
+  font-size: 1rem;
+  
+border: 124px black;
+border-radius: 20px;
+background-color: yellowgreen;
+margin: 17px;
+  margin-left: 17px;
+padding: 10px;
+}
+.day4{
+  font-size: 1rem;
+  
+border: 124px black;
+border-radius: 20px;
+background-color: yellowgreen;
+margin: 17px;
+  margin-left: 17px;
+padding: 10px;
+}
+.day5{
+  font-size: 1rem;
+
+border: 124px black;
+border-radius: 20px;
+background-color: yellowgreen;
+margin: 17px;
+  margin-left: 17px;
+padding: 10px;
+}
+/* #day1{
+  margin-right: 50px;
+}
+#day2{
+  margin-right: 50px;
+}
+#day3{
+  margin-right: 50px;
+}
+#day4{
+  margin-right: 50px;
+}
+#day5{
+  margin-right: 50px;
+} */
+.subs{
+  display: inline-block;
+}
+.col{
+  float: left;
+  width: 20%;
+}
+.hide{
+  visibility: collapse;
+}
+.visible{
+  visibility: visible;
+}

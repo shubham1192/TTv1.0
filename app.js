@@ -6,6 +6,8 @@ const read = require("body-parser/lib/read");
 mongoose.connect('mongodb://localhost:27017/TT', {useNewUrlParser: true});
 // const date = require(__dirname+"/date.js");
 const _ = require("lodash");
+const { stringify } = require("nodemon/lib/utils");
+const req = require("express/lib/request");
 const app = express();
 
 app.use(bodyParse.urlencoded({extended:true}));
@@ -15,6 +17,13 @@ app.set("view engine", "ejs"); //using ejs & creating a new dir (views/list.ejs)
 
 // var items =["Buy food", "Cook food", "Eat food"];
 // let workItems = [];
+const durationSchema={
+    name:String,
+    value: Number
+};
+
+const Duration=mongoose.model("Duration",durationSchema);
+
 
 //SCHEMA
 const itemsSchema={
@@ -36,9 +45,9 @@ const item3=new Item({
 // adding all the items into an array
 const defaultItems=[item1,item2,item3];
 let i=0;
-const days=["Tuesday","Wednesday","Thursday","Friday"];
-var count=0;
-var abc=[];
+const days=["Tuesday","Wednesday","Thursday","Friday","nxt"];
+// var count=0;
+// var abc=[];
 //new schema for custom lists
 const listSchema= {
     name: String,
@@ -52,6 +61,7 @@ app.get("/", function(req, res){
     // let day = date.getDate();
     // console.log(day);
     i=0;
+   
     List.findOne({name: "Monday"},function(err,foundList){
         if(!err){
             if(!foundList)
@@ -260,6 +270,41 @@ app.post("/days",function(req,res){
     i++;
     
 })
+var value=0;
+
+var durationValue;
+app.post("/dur",function(req,res){
+    durationValue=req.body.duration;
+    
+    Duration.findOne({name:"duration"},function(err,found){
+        if(!err){
+            if(!found)
+            {value=durationValue
+                const val=new Duration({
+                    name:"duration",
+                    value:durationValue
+                });
+                val.save();
+                res.redirect("/"+"nxt");
+            }
+            else{
+                value=durationValue
+                Duration.updateOne({name:"duration"},{value:value},function(err,update){
+                    if(!err){
+                        console.log(update);
+                        res.redirect("/"+"nxt");
+                    }
+                })
+            }
+            
+        }
+  
+    });
+})
+app.post("/modify",function(req,res){
+    value=0;
+    res.redirect("/nxt")
+})
 // app.post("/delete",function(req,res){
 //     console.log(req.body);
 //     const checkedItem=req.body.checkbox;
@@ -343,9 +388,9 @@ app.post("/days",function(req,res){
   
 // })
 let a=[],b=[],c=[]
-var arr=new Array(7);
+var arr=new Array();
 let weekdays= ["Monday","Tuesday","Wednesday","Thursday","Friday"]
-app.get("/wxt",async function(req,res){
+app.get("/nxt",async function(req,res){
 
     
     //     List.findOne({name:"Monday"},function(err,found){
@@ -398,11 +443,10 @@ app.get("/wxt",async function(req,res){
     }
     console.log(arr);
     res.redirect("/next")
-// a=[];b=[];
 });
 app.get("/next",function(req,res){
     console.log(arr.length)
-    res.render("secondpage",{data:arr})
+    res.render("secondpage",{data:arr,months:value})
 });
 app.listen(3000, function(){
     console.log("Server UP");
