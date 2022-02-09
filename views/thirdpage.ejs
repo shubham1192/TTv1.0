@@ -21,16 +21,30 @@
          <% }else{ %>
 
          <span> 
-          <%= day[i] %> <input type="checkbox" name="<%=day[i]%>" id="<%=day[i]%>">
+          <%= day[i] %> <input type="checkbox" name="subject" id="<%=i%>" value="<%=day[i]%>">
          </span>
 
          <% } %>
                 <br>
         <% } %>
-        <input type="button" value="Submit" id="mybutton">
+        <input type="button" onclick="sub()" value="Submit" id="mybutton">
     </form>
+    <script type="text/javascript">
+        
+        var values=[];
+      function sub()
+      {
+        let checkboxes = document.querySelectorAll('input[name="subject"]:checked');
+           
+            checkboxes.forEach((checkbox) => {
+                values.push(checkbox.value);
+         });
+            
+     }
+    
 
 
-    <script src="/app.js"></script>
+
+    </script>
 </body>
 </html>
