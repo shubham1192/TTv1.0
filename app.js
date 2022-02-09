@@ -1,5 +1,7 @@
 const express = require("express");
 const bodyParse = require("body-parser");
+const jsdom=require('jsdom')
+const {JSDOM} = jsdom;
 const mongoose= require('mongoose');
 const read = require("body-parser/lib/read");
 // mongoose.connect('mongodb+srv://admin-shubham:test123@cluster0.a5w6k.mongodb.net/todo', {useNewUrlParser: true});
@@ -343,9 +345,9 @@ app.post("/days",function(req,res){
   
 // })
 let a=[],b=[],c=[]
-var arr=new Array(7);
+var arr=new Array();
 let weekdays= ["Monday","Tuesday","Wednesday","Thursday","Friday"]
-app.get("/wxt",async function(req,res){
+app.get("/nxt",async function(req,res){
 
     
     //     List.findOne({name:"Monday"},function(err,found){
@@ -398,12 +400,45 @@ app.get("/wxt",async function(req,res){
     }
     console.log(arr);
     res.redirect("/next")
-// a=[];b=[];
 });
 app.get("/next",function(req,res){
-    console.log(arr.length)
+    // console.log(arr.length)
+    // const d= new Date();
+    // console.log(d.getDay())
+   
     res.render("secondpage",{data:arr})
 });
+
+// ! Third Page starts from Here
+
+let work=[]
+app.get("/attendence",async function (req,res){
+
+    
+    const d= new Date();
+    let day = d.getDay();
+
+   const a = await List.findOne({name:weekdays[day-1]})
+    work.push(weekdays[day-1]);
+    for(let i=3;i<a.items.length;i++)
+    {
+        work.push(a.items[i].name);
+    }
+    res.redirect('/attend');
+})
+const subjects = mongoose.model("Sub",listSchema); // same as listSchema
+// var btn=new JSDOM(document.getElementById("mybutton"))
+// btn.onclick = forward;
+
+app.get("/attend",function(req,res){
+
+    res.render('thirdpage',{day:work})
+    // if(res.body.MachineLearning)
+    // {
+    //  alert("TRUE")
+    // }
+})
+
 app.listen(3000, function(){
     console.log("Server UP");
     
