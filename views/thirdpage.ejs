@@ -48,13 +48,13 @@
         }
       function sub()
       {
+        values=[];
         let checkboxes = document.querySelectorAll('input[name="subject"]:checked');
            
             checkboxes.forEach((checkbox) => {
-                if(check(checkbox.value)===true)
-                {
+               
                     values.push(checkbox.value);
-                }
+                
                 
         });
             var a= JSON.stringify(values);
