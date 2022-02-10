@@ -408,20 +408,57 @@ app.get("/next",function(req,res){
 });
 
 // ! Third Page starts from Here
-
+const Subjects = mongoose.model("Subjects",listSchema);
+function check(y,z)
+{
+    for(var i=0;i<y.length;i++)
+    {
+        if(y[i].name===z)return false;
+        console.log(y[i].name)
+    }
+    return true;
+}
 app.post("/attendence",function(req,res){
 
-    console.log(req.body.datas)
+    const sol = req.body.datas;
+    let today = new Date().toISOString().slice(0, 10);
+    let t=new Item({
+        name:today
+    })
+    for(var i=0;i<sol.length;i++)
+    {
+        const x=JSON.stringify(sol[i])
+        Subjects.findOne({name:x},function(err,found){
+            if(!err)
+            {
+                if(!found)
+                {
+                    const S=new Subjects({
 
+                        name:x,
+                        items:t
+                    })
+                    S.save();
+                }
+                else{
+
+                   if(check(found.items,t)===true)
+                   {
+                        found.items.push(t);
+                   }
+               
+                }
+            }
+        })
+    }
 })
-let work=[]
-app.get("/attendence",async function (req,res){
 
-    
+let work=[]
+
+app.get("/attendence",async function (req,res){
     const d= new Date();
     let day = d.getDay();
-
-   const a = await List.findOne({name:weekdays[day-1]})
+    const a = await List.findOne({name:weekdays[day-1]})
     work.push(weekdays[day-1]);
     for(let i=3;i<a.items.length;i++)
     {
@@ -429,16 +466,8 @@ app.get("/attendence",async function (req,res){
     }
     res.redirect('/attend');
 })
-const subjects = mongoose.model("Sub",listSchema); // same as listSchema
-// var btn=new JSDOM(document.getElementById("mybutton"))
-// btn.onclick = forward;
-
 app.get("/attend",function(req,res){
     res.render('thirdpage',{day:work})
-    // if(res.body.MachineLearning)
-    // {
-    //  alert("TRUE")
-    // }
 })
 
 app.listen(3000, function(){
