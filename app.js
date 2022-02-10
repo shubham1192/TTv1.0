@@ -6,6 +6,7 @@ const read = require("body-parser/lib/read");
 mongoose.connect('mongodb://localhost:27017/TT', {useNewUrlParser: true});
 // const date = require(__dirname+"/date.js");
 const _ = require("lodash");
+const { name } = require("ejs");
 const app = express();
 
 app.use(bodyParse.urlencoded({extended:true}));
@@ -407,37 +408,127 @@ app.get("/next",function(req,res){
     res.render("secondpage",{data:arr})
 });
 
+
+
+
 // ! Third Page starts from Here
-app.post("/attendence",function(req,res){
 
-    console.log(req.body.datas)
 
+const subjectSchema={
+    name: String,
+    data:[]
+}
+const Subject = mongoose.model("Subject",subjectSchema);
+
+// function check(y,z)
+// {
+//     for(var i=0;i<y.length;i++)
+//     {
+//         if(y[i].name===z)return false;
+//         console.log(y[i].name)
+//     }
+//     return true;
+// }
+
+var count=0
+
+//POST - ADDING DATES
+app.post("/attendance",function(req,res){
+
+    const sol = req.body.datas;
+    let today = new Date().toISOString().slice(0, 10);
+    // let t=new Item({
+    //     name:today
+    // })
+    // console.log(sol);
+    JSON.stringify(sol)
+    console.log(sol.length)
+    for(let i=0;i<sol.length;i++)
+    {
+        console.log(i)
+        const x=sol[i]
+        Subject.findOne({name:sol[i]},function(err,found){
+            if(!err){
+                console.log(found.name)
+                Subject.findOneAndUpdate({name:found.name},{$push:{data:today}},function(err,added){
+                    if(!err)
+                    {
+                        console.log("Added")
+                    }
+                })
+                // found.data.push(today);
+        }
+    })
+}         
+            
 })
-let work=[]
-app.get("/attendence",async function (req,res){
+//
 
+let work=[]
+
+//CREATING DATABASE FOR SUBJECTS ON A PARTICULAR DAY
+app.get("/subject", function(req,res)
+{
+    for(let i=1;i<work.length;i++)
+    {
+    Subject.findOne({name:work[i]},function(err,foundsub){
+        if(!err)
+        {
+            if(!foundsub)
+            {
+                const sub=new Subject({
+
+                    name:work[i],
+                    
+                    
+                })
+                sub.save();
+                Subject.findOne({name:work[i]},function(err,foundsub){
+                    if(!err)
+                    {
+                        if(foundsub)
+                        {
+                            Subject.findOneAndDelete({name:work[i]},function(err,replace){
+                                if(!err)
+                                {
+                                    console.log("DELETED")
+                                }
+                            })
+                                
+                            }
+                     }
+                    })
+                }
+   
+            }          
+    })
+    }
+
+res.redirect("/attend")
+})
+//
+
+// CAN BE MERGED:-
+app.get("/sub",function (req,res){
     
+    res.redirect("/subject")
+})
+// 
+
+app.get("/attendence",async function (req,res){
     const d= new Date();
     let day = d.getDay();
-
-   const a = await List.findOne({name:weekdays[day-1]})
+    const a = await List.findOne({name:weekdays[day-1]})
     work.push(weekdays[day-1]);
     for(let i=3;i<a.items.length;i++)
     {
         work.push(a.items[i].name);
     }
-    res.redirect('/attend');
+    res.redirect("/sub")
+    
 })
-const subjects = mongoose.model("Sub",listSchema); // same as listSchema
-// var btn=new JSDOM(document.getElementById("mybutton"))
-// btn.onclick = forward;
-
 app.get("/attend",function(req,res){
     res.render('thirdpage',{day:work})
-    // if(res.body.MachineLearning)
-    // {
-    //  alert("TRUE")
-    // }
 })
 
 app.listen(3000, function(){
