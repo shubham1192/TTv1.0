@@ -1,7 +1,5 @@
 const express = require("express");
 const bodyParse = require("body-parser");
-const jsdom=require('jsdom')
-const {JSDOM} = jsdom;
 const mongoose= require('mongoose');
 const read = require("body-parser/lib/read");
 // mongoose.connect('mongodb+srv://admin-shubham:test123@cluster0.a5w6k.mongodb.net/todo', {useNewUrlParser: true});
@@ -344,7 +342,7 @@ app.post("/days",function(req,res){
 // })
   
 // })
-let a=[],b=[],c=[]
+// let a=[],b=[],c=[]
 var arr=new Array();
 let weekdays= ["Monday","Tuesday","Wednesday","Thursday","Friday"]
 app.get("/nxt",async function(req,res){
@@ -410,7 +408,11 @@ app.get("/next",function(req,res){
 });
 
 // ! Third Page starts from Here
+app.post("/attendence",function(req,res){
 
+    console.log(req.body.datas)
+
+})
 let work=[]
 app.get("/attendence",async function (req,res){
 
@@ -431,7 +433,6 @@ const subjects = mongoose.model("Sub",listSchema); // same as listSchema
 // btn.onclick = forward;
 
 app.get("/attend",function(req,res){
-
     res.render('thirdpage',{day:work})
     // if(res.body.MachineLearning)
     // {
