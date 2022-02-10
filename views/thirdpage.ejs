@@ -32,14 +32,26 @@
     <script type="text/javascript">
         
         var values=[];
+        function check(value)
+        {
+            for(var i=0;i<values.length;i++)
+            {
+                if(values[i]===value)return false;
+            }
+            return true;
+        }
       function sub()
       {
         let checkboxes = document.querySelectorAll('input[name="subject"]:checked');
            
             checkboxes.forEach((checkbox) => {
-                values.push(checkbox.value);
-         });
-            // Click submit and check the console of inspect element you will get the array of check items
+                if(check(checkbox.value)===true)
+                {
+                    values.push(checkbox.value);
+                }
+                
+        });
+            console.log(values)
      }
     
 
