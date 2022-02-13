@@ -146,10 +146,9 @@ app.get("/:userName", async function (req, res) {
     })
     x.udays[0].items.push(z);
     console.log(x.udays[0].items)
-    x.save();
+    x.save()
     list.save()
     console.log(a,b);
-    res.render("list",{title:x.udays[0],newListItems:x.udays[0].items})
   }
   List.findOne({ name: "Monday" }, function (err, foundList) {
     if (!err) {
