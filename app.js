@@ -15,6 +15,10 @@ const app = express();
 app.use(bodyParse.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
+app.get('/favicon.ico', function(req, res) { 
+  res.status(204);
+  res.end();    
+});
 app.set("view engine", "ejs"); //using ejs & creating a new dir (views/list.ejs)
 
 // var items =["Buy food", "Cook food", "Eat food"];
@@ -67,14 +71,15 @@ const userSchema={
 
 const User=mongoose.model("User",userSchema)
 
-const userName=String
+let userName;
+var Name;
 app.get("/welcome",function(req,res){
 res.render("welcome")
 })
 app.post("/reg",function(req,res)
 {
-  const userName= req.body.user;
-  console.log(userName);
+  userName= req.body.user;
+  Name=req.body.user
   User.findOne({uname:userName},function(err,foundUser){
     if(!err)
     {
@@ -113,11 +118,39 @@ app.post("/reg",function(req,res)
 // })
 // })
 
-app.get("/:userName", function (req, res) {
+app.get("/:userName", async function (req, res) {
   // let day = date.getDay();
   // let day = date.getDate();
   // console.log(day);
   i = 0;
+ 
+  const {userName}=(req.params)
+  const x=await User.findOne({uname:userName})
+  if(x!==null)
+  {
+    const list=new List({
+      name:"Monday",
+      items:defaultItems
+    })
+    const z=new Item({
+      name:"Machine"
+    })
+    console.log(z);
+   
+    const a = await User.updateOne({uname:userName},{
+
+      $set:{
+        udays:[list],
+      }
+
+    })
+    x.udays[0].items.push(z);
+    console.log(x.udays[0].items)
+    x.save();
+    list.save()
+    console.log(a,b);
+    res.render("list",{title:x.udays[0],newListItems:x.udays[0].items})
+  }
   List.findOne({ name: "Monday" }, function (err, foundList) {
     if (!err) {
       if (!foundList) {
@@ -127,13 +160,7 @@ app.get("/:userName", function (req, res) {
         });
 
         list.save();
-        const a=User.updateOne({uname:userName},
-          {
-            $set:{
-              udays:[list]
-            }
-          })
-        res.redirect("/:userName");
+        res.redirect(`/${userName}`);
       } else {
         res.render("list", {
           title: foundList.name,
@@ -143,87 +170,9 @@ app.get("/:userName", function (req, res) {
       // console.log(i);
     }
   });
+
 });
-app.get("/" + "Tuesday", function (req, res) {
-  List.findOne({ name: "Tuesday" }, function (err, foundList) {
-    if (!err) {
-      if (!foundList) {
-        const list = new List({
-          name: "Tuesday",
-          items: defaultItems,
-        });
-        list.save();
-        res.redirect("/" + "Tuesday");
-      } else {
-        res.render("list", {
-          title: foundList.name,
-          newListItems: foundList.items,
-        });
-      }
-      // console.log(i);
-    }
-  });
-});
-app.get("/" + "Wednesday", function (req, res) {
-  List.findOne({ name: "Wednesday" }, function (err, foundList) {
-    if (!err) {
-      if (!foundList) {
-        const list = new List({
-          name: "Wednesday",
-          items: defaultItems,
-        });
-        list.save();
-        res.redirect("/" + "Wednesday");
-      } else {
-        res.render("list", {
-          title: foundList.name,
-          newListItems: foundList.items,
-        });
-      }
-      // console.log(i);
-    }
-  });
-});
-app.get("/" + "Thursday", function (req, res) {
-  List.findOne({ name: "Thursday" }, function (err, foundList) {
-    if (!err) {
-      if (!foundList) {
-        const list = new List({
-          name: "Thursday",
-          items: defaultItems,
-        });
-        list.save();
-        res.redirect("/" + "Thursday");
-      } else {
-        res.render("list", {
-          title: foundList.name,
-          newListItems: foundList.items,
-        });
-      }
-      // console.log(i);
-    }
-  });
-});
-app.get("/" + "Friday", function (req, res) {
-  List.findOne({ name: "Friday" }, function (err, foundList) {
-    if (!err) {
-      if (!foundList) {
-        const list = new List({
-          name: "Friday",
-          items: defaultItems,
-        });
-        list.save();
-        res.redirect("/" + "Friday");
-      } else {
-        res.render("list", {
-          title: foundList.name,
-          newListItems: foundList.items,
-        });
-      }
-      // console.log(i);
-    }
-  });
-});
+
 // Item.find({},function(err,found){
 
 //     if(found.length === 0){
