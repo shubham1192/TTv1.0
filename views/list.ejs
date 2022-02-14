@@ -20,14 +20,9 @@
         <img id="img1" style="position: absolute;width: 14%;left: 11%;top: 71%;transform: rotate(13.33grad);" src="imgs\online-class.png" alt="">
        
         <% newListItems.forEach(function(item){ %>
-            <form action="/delete" method="post">
                 <div class="item">
-                    <!-- form submission when checkbox checked -->
-                    <input name="checkbox" type="checkbox" value="<%=item. _id%>" onChange="this.form.submit()">
                     <p><%= item.name %></p>
                 </div>
-                <input type="hidden" name="listName" value="<%= title %>"></input>
-            </form>
         <% }) %>
 
         <form class="item" action="/" method="post">
