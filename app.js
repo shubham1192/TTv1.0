@@ -10,6 +10,7 @@ const { stringify } = require("nodemon/lib/utils");
 const req = require("express/lib/request");
 const { required } = require("nodemon/lib/config");
 const { redirect } = require("express/lib/response");
+const { name } = require("ejs");
 const app = express();
 
 app.use(bodyParse.urlencoded({ extended: true }));
@@ -50,7 +51,7 @@ const item3 = new Item({
 // adding all the items into an array
 const defaultItems = [item1, item2, item3];
 let i = 0;
-const days = ["Tuesday", "Wednesday", "Thursday", "Friday", "nxt"];
+const days = ["Monday","Tuesday", "Wednesday", "Thursday", "Friday","nxt"];
 // var count=0;
 // var abc=[];
 //new schema for custom lists
@@ -97,79 +98,43 @@ app.post("/reg",function(req,res)
   })
 })
 
-// app.get("/:userName", function (req, res){
-//   User.findOne({uname:userName},function(err,found){
-//     if(!err)
-//     {
-//         found.findOne({name: "Monday" }, function (err, foundList) {
-//         if (!err) {
-//           if (!foundList) {
-//             const list = new List({
-//               name: "Monday",
-//               items: defaultItems,
-//             });
-//             list.save();
-            
-//             res.redirect("/"+userName);
-//           } 
-//         }
-//       })
-//     }
-// })
-// })
-
-app.get("/:userName", async function (req, res) {
-  // let day = date.getDay();
-  // let day = date.getDate();
-  // console.log(day);
-  i = 0;
- 
+// const days = ["Monday","Tuesday", "Wednesday", "Thursday", "Friday"];
+app.get("/:userName", async function (req, res) { 
   const {userName}=(req.params)
-  const x=await User.findOne({uname:userName})
-  if(x!==null)
+  const x=await User.findOne({name:days[i]});
+  // console.log(x)
+  var l=(x.udays.length===null||x===null)?l=0:l=x.udays.length
+  // console.log(l);
+  let arr=[];
+  if(l===0)
   {
-    const list=new List({
-      name:"Monday",
-      items:defaultItems
-    })
-    const z=new Item({
-      name:"Machine"
-    })
-    console.log(z);
-   
-    const a = await User.updateOne({uname:userName},{
+
+    for(let j=0;j<days.length;j++)
+    {
+      var list=new List({
+        name:days[j],
+        items:defaultItems
+      })
+      
+      arr.push(list);
+    }
+    const a=await User.updateOne({uname:userName},{
 
       $set:{
-        udays:[list],
+        udays:arr
       }
 
     })
-    x.udays[0].items.push(z);
-    console.log(x.udays[0].items)
-    x.save()
-    list.save()
-    console.log(a,b);
+    res.redirect(`/${days[i]}`)
   }
-  List.findOne({ name: "Monday" }, function (err, foundList) {
-    if (!err) {
-      if (!foundList) {
-        const list = new List({
-          name: "Monday",
-          items: defaultItems,
-        });
+  else{
+    res.render("list", {
+      title: x.udays[i].name,
+      newListItems: x.udays[i].items,
+    });
 
-        list.save();
-        res.redirect(`/${userName}`);
-      } else {
-        res.render("list", {
-          title: foundList.name,
-          newListItems: foundList.items,
-        });
-      }
-      // console.log(i);
-    }
-  });
-
+  }
+  
 });
 
 // Item.find({},function(err,found){
@@ -238,10 +203,11 @@ app.post("/", function (req, res) {
   // item.save();
   // res.redirect("/");}
   // else{
-  List.findOne({ name: listName }, function (err, foundList) {
-    foundList.items.push(item);
+  User.findOne({ name: days[i] }, function (err, foundList) {
+    console.log("FoundList : ",foundList)
+    foundList.udays[i].items.push(item);
     foundList.save();
-    if (listName == "Monday") res.redirect("/:userName");
+    if (listName == "Monday") res.redirect("/"+"Monday");
     else if (i === 1) {
       res.redirect("/" + "Tuesday");
     } else if (i === 2) {
